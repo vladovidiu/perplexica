@@ -1,6 +1,4 @@
 import { searchSearxng } from '@/lib/searxng';
-import { generateLlmTitle } from '@/lib/utils/llmTitleGenerator';
-import { getAvailableChatModelProviders } from '@/lib/providers';
 
 const articleWebsites = [
   'yahoo.com',
@@ -61,17 +59,9 @@ export const GET = async (req: Request) => {
       ).results;
     }
 
-    const chatModelProviders = await getAvailableChatModelProviders();
-    const defaultChatModel = chatModelProviders[Object.keys(chatModelProviders)[0]][Object.keys(chatModelProviders[Object.keys(chatModelProviders)[0]])[0]].model;
-
-    const blogsWithLlmTitles = await Promise.all(data.map(async (blog: any) => {
-      const llmTitle = await generateLlmTitle(blog.content || blog.title, defaultChatModel);
-      return { ...blog, llmTitle };
-    }));
-
     return Response.json(
       {
-        blogs: blogsWithLlmTitles,
+        blogs: data,
       },
       {
         status: 200,

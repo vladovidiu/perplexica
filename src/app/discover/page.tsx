@@ -10,7 +10,6 @@ interface Discover {
   content: string;
   url: string;
   thumbnail: string;
-  llmTitle?: string;
 }
 
 const Page = () => {
@@ -97,7 +96,7 @@ const Page = () => {
                 />
                 <div className="px-6 py-4">
                   <div className="font-bold text-lg mb-2">
-                    {item.llmTitle || item.title.slice(0, 100)}...
+                    {item.title.slice(0, 100)}...
                   </div>
                   <p className="text-black-70 dark:text-white/70 text-sm">
                     {item.content.slice(0, 100)}...
