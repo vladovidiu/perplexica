@@ -1,21 +1,5 @@
 # 🚀 Perplexica - An AI-powered search engine 🔎 <!-- omit in toc -->
 
-<div align="center" markdown="1">
-   <sup>Special thanks to:</sup>
-   <br>
-   <br>
-   <a href="https://www.warp.dev/perplexica">
-      <img alt="Warp sponsorship" width="400" src="https://github.com/user-attachments/assets/775dd593-9b5f-40f1-bf48-479faff4c27b">
-   </a>
-
-### [Warp, the AI Devtool that lives in your terminal](https://www.warp.dev/perplexica)
-
-[Available for MacOS, Linux, & Windows](https://www.warp.dev/perplexica)
-
-</div>
-
-<hr/>
-
 [![Discord](https://dcbadge.limes.pink/api/server/26aArMy8tT?style=flat)](https://discord.gg/26aArMy8tT)
 
 ![preview](.assets/perplexica-screenshot.png?)
@@ -27,6 +11,8 @@
 - [Features](#features)
 - [Installation](#installation)
   - [Getting Started with Docker (Recommended)](#getting-started-with-docker-recommended)
+    - [For Development](#for-development)
+    - [For Production](#for-production)
   - [Non-Docker Installation](#non-docker-installation)
   - [Ollama Connection Errors](#ollama-connection-errors)
 - [Using as a Search Engine](#using-as-a-search-engine)
@@ -34,8 +20,6 @@
 - [Expose Perplexica to a network](#expose-perplexica-to-network)
 - [One-Click Deployment](#one-click-deployment)
 - [Upcoming Features](#upcoming-features)
-- [Support Us](#support-us)
-  - [Donations](#donations)
 - [Contribution](#contribution)
 - [Help and Support](#help-and-support)
 
@@ -74,6 +58,44 @@ It has many more features like image and video search. Some of the planned featu
 There are mainly 2 ways of installing Perplexica - With Docker, Without Docker. Using Docker is highly recommended.
 
 ### Getting Started with Docker (Recommended)
+
+### For Development
+
+1. Ensure Docker is installed and running on your system.
+2. Clone the Perplexica repository:
+
+   ```bash
+   git clone https://github.com/ItzCrazyKns/Perplexica.git
+   ```
+
+3. After cloning, navigate to the directory containing the project files.
+
+4. Rename the `sample.config.toml` file to `config.toml`. For Docker setups, you need only fill in the following fields:
+
+   - `OPENAI`: Your OpenAI API key. **You only need to fill this if you wish to use OpenAI's models**.
+   - `OLLAMA`: Your Ollama API URL. You should enter it as `http://host.docker.internal:PORT_NUMBER`. If you installed Ollama on port 11434, use `http://host.docker.internal:11434`. For other ports, adjust accordingly. **You need to fill this if you wish to use Ollama's models instead of OpenAI's**.
+   - `GROQ`: Your Groq API key. **You only need to fill this if you wish to use Groq's hosted models**.
+   - `ANTHROPIC`: Your Anthropic API key. **You only need to fill this if you wish to use Anthropic models**.
+   - `Gemini`: Your Gemini API key. **You only need to fill this if you wish to use Google's models**.
+   - `DEEPSEEK`: Your Deepseek API key. **Only needed if you want Deepseek models.**
+   - `AIMLAPI`: Your AI/ML API key. **Only needed if you want to use AI/ML API models and embeddings.**
+
+     **Note**: You can change these after starting Perplexica from the settings dialog.
+
+   - `SIMILARITY_MEASURE`: The similarity measure to use (This is filled by default; you can leave it as is if you are unsure about it.)
+
+5. Ensure you are in the project root directory containing both `docker-compose.yaml` and `docker-compose.dev.yaml` files, then execute:
+
+   ```bash
+   docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d
+   ```
+
+6. Wait a few minutes for the setup to complete. You can access Perplexica at http://localhost:3000 in your web browser.
+
+**Note**: After the containers are built, you can start Perplexica directly from Docker without having to open a terminal.
+
+### For Production
+
 
 1. Ensure Docker is installed and running on your system.
 2. Clone the Perplexica repository:
@@ -158,12 +180,6 @@ For more details, check out the full documentation [here](https://github.com/Itz
 
 Perplexica runs on Next.js and handles all API requests. It works right away on the same network and stays accessible even with port forwarding.
 
-## One-Click Deployment
-
-[![Deploy to Sealos](https://raw.githubusercontent.com/labring-actions/templates/main/Deploy-on-Sealos.svg)](https://usw.sealos.io/?openapp=system-template%3FtemplateName%3Dperplexica)
-[![Deploy to RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/?app_id=267)
-[![Run on ClawCloud](https://raw.githubusercontent.com/ClawCloud/Run-Template/refs/heads/main/Run-on-ClawCloud.svg)](https://template.run.claw.cloud/?referralCode=U11MRQ8U9RM4&openapp=system-fastdeploy%3FtemplateName%3Dperplexica)
-
 ## Upcoming Features
 
 - [x] Add settings page
@@ -174,24 +190,8 @@ Perplexica runs on Next.js and handles all API requests. It works right away on 
 - [x] Adding Discover
 - [ ] Finalizing Copilot Mode
 
-## Support Us
-
-If you find Perplexica useful, consider giving us a star on GitHub. This helps more people discover Perplexica and supports the development of new features. Your support is greatly appreciated.
-
-### Donations
-
-We also accept donations to help sustain our project. If you would like to contribute, you can use the following options to donate. Thank you for your support!
-
-| Ethereum                                              |
-| ----------------------------------------------------- |
-| Address: `0xB025a84b2F269570Eb8D4b05DEdaA41D8525B6DD` |
-
 ## Contribution
 
 Perplexica is built on the idea that AI and large language models should be easy for everyone to use. If you find bugs or have ideas, please share them in via GitHub Issues. For more information on contributing to Perplexica you can read the [CONTRIBUTING.md](CONTRIBUTING.md) file to learn more about Perplexica and how you can contribute to it.
-
-## Help and Support
-
-If you have any questions or feedback, please feel free to reach out to us. You can create an issue on GitHub or join our Discord server. There, you can connect with other users, share your experiences and reviews, and receive more personalized help. [Click here](https://discord.gg/EFwsmQDgAu) to join the Discord server. To discuss matters outside of regular support, feel free to contact me on Discord at `itzcrazykns`.
 
 Thank you for exploring Perplexica, the AI-powered search engine designed to enhance your search experience. We are constantly working to improve Perplexica and expand its capabilities. We value your feedback and contributions which help us make Perplexica even better. Don't forget to check back for updates and new features!
