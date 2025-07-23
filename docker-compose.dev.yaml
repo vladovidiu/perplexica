@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: app.dockerfile
+    command: npm run dev
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/perplexica
+      - /home/perplexica/node_modules
+      - /home/perplexica/.next
+    environment:
+      - SEARXNG_API_URL=http://searxng:8080
+      - DATA_DIR=/home/perplexica
