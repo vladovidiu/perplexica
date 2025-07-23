@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: app.dockerfile
-    command: npm run dev
+    command: sh -c "yarn install && yarn dev"
     ports:
       - 3000:3000
     volumes:
