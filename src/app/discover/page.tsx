@@ -1,16 +1,116 @@
 'use client';
 
 import { Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
 interface Discover {
   title: string;
+  originalTitle?: string;
   content: string;
   url: string;
   thumbnail: string;
+  generatedTitle?: string;
 }
+
+const ArticleCard = ({ item }: { item: Discover }) => {
+  const [title, setTitle] = useState(item.title);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const cardRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      async (entries) => {
+        const [entry] = entries;
+
+        // Only generate title when the card becomes visible
+        if (
+          entry.isIntersecting &&
+          !item.generatedTitle &&
+          !isGenerating &&
+          item.content &&
+          item.content.length > 50
+        ) {
+          setIsGenerating(true);
+
+          try {
+            const res = await fetch('/api/generate-title', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                content: item.content,
+                url: item.url,
+              }),
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              setTitle(data.title);
+              item.generatedTitle = data.title; // Cache in the item object
+            }
+          } catch (error) {
+            console.error('Error generating title:', error);
+          } finally {
+            setIsGenerating(false);
+          }
+        }
+      },
+      {
+        // Trigger when 10% of the card is visible
+        threshold: 0.1,
+        // Add some margin to start loading a bit before the card is visible
+        rootMargin: '50px',
+      },
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
+      }
+    };
+  }, [item, isGenerating]);
+
+  return (
+    <Link
+      ref={cardRef}
+      href={`/?q=${encodeURIComponent(title)}`}
+      className="max-w-sm rounded-lg overflow-hidden bg-light-secondary dark:bg-dark-secondary hover:-translate-y-[1px] transition duration-200"
+      target="_blank"
+    >
+      <img
+        className="object-cover w-full aspect-video"
+        src={
+          new URL(item.thumbnail).origin +
+          new URL(item.thumbnail).pathname +
+          `?id=${new URL(item.thumbnail).searchParams.get('id')}`
+        }
+        alt={title}
+      />
+      <div className="px-6 py-4">
+        <div className="font-bold text-lg mb-2">
+          {isGenerating ? (
+            <span className="text-gray-500 italic">Generating title...</span>
+          ) : (
+            <>
+              {title.slice(0, 100)}
+              {title.length > 100 ? '...' : ''}
+            </>
+          )}
+        </div>
+        <p className="text-black-70 dark:text-white/70 text-sm">
+          {item.content.slice(0, 100)}...
+        </p>
+      </div>
+    </Link>
+  );
+};
 
 const Page = () => {
   const [discover, setDiscover] = useState<Discover[] | null>(null);
@@ -78,32 +178,7 @@ const Page = () => {
 
         <div className="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 pb-28 lg:pb-8 w-full justify-items-center lg:justify-items-start">
           {discover &&
-            discover?.map((item, i) => (
-              <Link
-                href={`/?q=Summary: ${item.url}`}
-                key={i}
-                className="max-w-sm rounded-lg overflow-hidden bg-light-secondary dark:bg-dark-secondary hover:-translate-y-[1px] transition duration-200"
-                target="_blank"
-              >
-                <img
-                  className="object-cover w-full aspect-video"
-                  src={
-                    new URL(item.thumbnail).origin +
-                    new URL(item.thumbnail).pathname +
-                    `?id=${new URL(item.thumbnail).searchParams.get('id')}`
-                  }
-                  alt={item.title}
-                />
-                <div className="px-6 py-4">
-                  <div className="font-bold text-lg mb-2">
-                    {item.title.slice(0, 100)}...
-                  </div>
-                  <p className="text-black-70 dark:text-white/70 text-sm">
-                    {item.content.slice(0, 100)}...
-                  </p>
-                </div>
-              </Link>
-            ))}
+            discover?.map((item, i) => <ArticleCard key={i} item={item} />)}
         </div>
       </div>
     </>
